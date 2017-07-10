@@ -1,2 +1,2 @@
 # minestarPerks
-TODO: Cooldowns must not be shared .txt file. Can track in DB or create file per player.
+1.1 - Cooldown info stored per player now instead of shared file.

@@ -1,8 +1,5 @@
 package minestar.minestarperks;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,84 +71,17 @@ public class Functions {
 		}		
 	}
 	
-	// GET COOLDOWN FOR PLAYER
-	public String getCooldownForPlayer(Player player, String perkType) {
-		String answer = "";
-		int c = 0;
-		for(String iline : plugin.cooldowns){
-			if(iline.contains(player.getUniqueId().toString()) && iline.contains(perkType)){
-				// their line, pull it in
-				String[] fullLine = iline.split("TIME");
-				//String uuid = fullLine[0];
-				//String pType = fullLine[1];
-				long timeset = Long.parseLong(fullLine[2]);
-				long cdTime = Long.parseLong(fullLine[3]);
-				long timeElapsed = getTimeElapsed(timeset);
-				// this will return how much time has elapsed since it was used in milliseconds
-				long timeleft = cdTime - timeElapsed;
-				if(timeElapsed < cdTime){
-					int seconds = (int) (timeleft / 1000) % 60 ;
-					int minutes = (int) ((timeleft / (1000*60)) % 60);
-					int hours   = (int) ((timeleft / (1000*60*60)) % 24);
-					answer = Integer.toString(hours) + ":" + Integer.toString(minutes) + ":" + Integer.toString(seconds) + "";
-				}
-				else {
-					// remove entry
-					plugin.cooldowns.remove(c);
-					// rewrite cooldown file
-					updateCooldownFile();
-				}
-				break;
-			}
-			c++;
-		}
-		return answer;
-	}
 	
-	// SET COOLDOWN FOR PLAYER
-	public void setCooldownForPlayer(Player player, long totalmillis, String perkType){
-		// incoming cd amount is mins, convert to milliseconds
-		String newEntry = player.getUniqueId().toString() + "TIME" + perkType + "TIME" + Long.toString(System.currentTimeMillis()) + "TIME" + Long.toString(totalmillis);
-		
-		try{
-			FileWriter fw = new FileWriter(plugin.cdFile, true);
-			BufferedWriter bw = new BufferedWriter(fw);
-				bw.append(newEntry);
-				bw.newLine();
-		    bw.close();
-		    fw.close();
-		} catch (IOException e) {
-		    e.printStackTrace();
-		    plugin.log.warning("Issue while: setting/writing to cooldown file for player.");
-		}
-		plugin.cooldowns.add(newEntry);
-	}
 	
 	// GET ELAPSED (SYSTEM)TIME SINCE
-	private long getTimeElapsed(long dt){
+	public long getTimeElapsed(long dt){
 		long now = System.currentTimeMillis();
 		return now - dt;
 	}
 	
-	// UPDATE/REMAKE COOLDOWN FILE
-	private void updateCooldownFile(){
-		try{
-			FileWriter fw = new FileWriter(plugin.cdFile, false);
-			BufferedWriter bw = new BufferedWriter(fw);
-			for(String s : plugin.cooldowns){
-				bw.append(s);
-				bw.newLine();
-			}
-			bw.close();
-			fw.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-			plugin.log.warning("Issue while: updating/writing to cooldown file.");
-		}
-		
-	}
 	
-	// GIVE PLAYER FOOD PERK BASED ON RANK/PRIV
+	
+	// GIVE PLAYER PERK BASED ON RANK/PRIV
 	public void givePerkByRank(Player player, String rank, String perkType){
 		List<String> perks = plugin.getConfig().getStringList(perkType + "." + rank);
 				
@@ -204,7 +134,7 @@ public class Functions {
 			}
 			if(perkadded){
 				// if perk was given, add to cooldown list
-				setCooldownForPlayer(player, itemCooldown, perkType);
+				plugin.Cooldowns.setCooldownForPlayer(player, itemCooldown, perkType);
 			}
 		}
 	}

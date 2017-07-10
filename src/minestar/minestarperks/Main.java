@@ -16,12 +16,11 @@ public class Main extends JavaPlugin {
 	
 	public File configFile;					// plugin config file (yml)
 	public File cdFile;						// cooldown file (txt)	
-	
-	
+		
 	public PluginConfig PluginConfig;		// plugin setup functions
 	public Functions Functions;				// all general functions
-	
-	public ArrayList<String> cooldowns;		// hold list of cooldown times 
+	public Cooldowns Cooldowns;				// all cooldown functions
+	 
 	public ArrayList<String> perkTypes;		// holds name of each perkType found in config.yml (ie: food)
 	
 	@Override
@@ -34,7 +33,8 @@ public class Main extends JavaPlugin {
 		log = Logger.getLogger("Minecraft");
 		PluginConfig = new PluginConfig(this);
 		Functions = new Functions(this);
-		cooldowns = new ArrayList<String>();
+		Cooldowns = new Cooldowns(this);
+				
 		perkTypes = new ArrayList<String>();
 		
 		// plugin config, make/load

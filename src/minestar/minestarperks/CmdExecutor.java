@@ -68,8 +68,8 @@ public class CmdExecutor implements CommandExecutor {
 															
 					// make sure they're not on a cooldown
 					// TODO: Switch cooldown to work by perkType not just one entry per player
-					if(plugin.Functions.getCooldownForPlayer(player, perkWanted) != ""){
-						player.sendMessage(ChatColor.YELLOW + "Perk is on cooldown. Time remaining: " + plugin.Functions.getCooldownForPlayer(player, perkWanted) + ChatColor.RESET);
+					if(plugin.Cooldowns.getCooldownForPlayer(player, perkWanted) != ""){
+						player.sendMessage(ChatColor.YELLOW + "Perk is on cooldown. Time remaining: " + plugin.Cooldowns.getCooldownForPlayer(player, perkWanted) + ChatColor.RESET);
 						return true;
 					}
 					

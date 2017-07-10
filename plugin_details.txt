@@ -54,3 +54,7 @@ TODO
 - Show player perks they have access to.
 - Give Admins ability to remove player cooldowns.
 - Give Admins ability to remove/add perks to config.yml.
+
+v1.1
+- Cooldown functions moved to Cooldown class.
+- Cooldown file is now made per player instead of shared cooldown file.

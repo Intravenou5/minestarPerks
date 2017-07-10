@@ -1,9 +1,7 @@
 package minestar.minestarperks;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class PluginConfig {
 	public Main plugin;
@@ -31,29 +29,19 @@ public class PluginConfig {
 				createDefaultConfig();
 			} 
 			
-			// load all perkTypes
+			// load all perkTypes from config.yml keys
 			cop = "loading in perkTypes.";
 			for(String s : plugin.getConfig().getKeys(false)){
 				plugin.perkTypes.add(s);
 			}
 		
-		} catch (Exception e){
-			e.printStackTrace();
-			plugin.log.warning("Issue while: " + cop);
-			return false;
-		}
-		
-		// cooldown file
-		try {
-			plugin.cdFile = new File(plugin.getDataFolder(), "cooldowns.txt");
-			if(!plugin.cdFile.exists()){
-				cop = "making default cooldowns.txt file.";
-				plugin.cdFile.createNewFile();
-			} else {
-				// load cooldowns file to array
-				cop = "loading cooldown.txt file to plugin.";
-				loadCooldownList();
+			// if players folder doesnt exist, make one
+			cop = "making players folder.";
+			File playersDir = new File(plugin.getDataFolder() + "/players");
+			if(!playersDir.exists()){
+				playersDir.mkdirs();
 			}
+			
 		} catch (Exception e){
 			e.printStackTrace();
 			plugin.log.warning("Issue while: " + cop);
@@ -61,22 +49,6 @@ public class PluginConfig {
 		}
 		
 		return true;
-	}
-	
-	// LOAD COOLDOWN FILE TO PLUGIN ARRAY
-	private void loadCooldownList(){
-		try {
-	         Scanner cdscan = new Scanner(plugin.cdFile);
-	         plugin.cooldowns.clear();
-	         while (cdscan.hasNextLine()) {
-	           plugin.cooldowns.add(cdscan.nextLine());
-	         }
-	         plugin.log.info("Loaded " + Integer.toString(plugin.cooldowns.size()) + " existing cooldown(s).");
-	         cdscan.close();
-	       } catch (FileNotFoundException e) {
-	         e.printStackTrace();
-	         plugin.log.warning("Issue while: trying to load in cooldown.txt to plugin array.");
-	       }
 	}
 	
 	// CREATE A DEFAULT CONFIG FILE FOR PLUGIN

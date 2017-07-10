@@ -1,0 +1,13 @@
+name: MinestarPerks
+author: Intravenous
+version: 1.0.0
+main: minestar.minestarperks.Main
+softdepend: [Vault]
+commands:
+  perk:
+    description: Gives player a perk type if they have permission
+    usage: /perk
+  glow:
+    description: Toggle glow on and off
+    usage: /glow
+

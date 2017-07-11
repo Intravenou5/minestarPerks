@@ -1,8 +1,5 @@
 package minestar.minestarperks;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,49 +34,28 @@ public class CmdExecutor implements CommandExecutor {
 			
 				// PERK <type>
 				if(label.equalsIgnoreCase("perk")){
-					String perkWanted = args[0];
-					String perkGroup = "";
-					String permString = "";
-					String perk = "";
-					boolean playerHasPermission = false;
-					
-					for(String perkType : plugin.perkTypes){
-						if(perkType.equalsIgnoreCase(perkWanted)){
-							// found perk, check permission, then cooldown, then give to player
-							// 1. get all groups in this perkType
-							List<String> allGroups = new ArrayList<String>();
-							for(String s : plugin.getConfig().getConfigurationSection(perkType).getKeys(false)){
-								allGroups.add(s);	
-							}
-							// 2. does player have a permission that matches any of these?		
-							for(String g : allGroups){
-								permString = "msperk." + perkType + "." + g;
-								if(player.hasPermission(permString)){
-									perk = perkType;
-									perkGroup = g;
-									playerHasPermission = true;
-									break;
-								}
-							}
-							
+					String inc = args[0];
+					// does inc exist as a perk?
+					if(plugin.Functions.doesPerkExist(inc)){
+						// exists as a perk
+						// does this player have privs to use it?
+						if(!plugin.Functions.doesPlayerHavePerkPermission(player, inc)){
+							// does not have permission to use this perk
+							player.sendMessage(ChatColor.YELLOW + "You do not have access to that type of perk." + ChatColor.RESET);
+							return true;
 						}
-						if(playerHasPermission){break;} // dont stay in for-loop if dont need
-					}
-															
-					// make sure they're not on a cooldown
-					// TODO: Switch cooldown to work by perkType not just one entry per player
-					if(plugin.Cooldowns.getCooldownForPlayer(player, perkWanted) != ""){
-						player.sendMessage(ChatColor.YELLOW + "Perk is on cooldown. Time remaining: " + plugin.Cooldowns.getCooldownForPlayer(player, perkWanted) + ChatColor.RESET);
+					} else {
+						// is not a known perk
+						player.sendMessage(ChatColor.YELLOW + "Unknown type of perk." + ChatColor.RESET);
 						return true;
 					}
-					
-					// give perk if playerHasPermission
-					if(playerHasPermission && perkGroup != "" && perk != ""){
-						plugin.Functions.givePerkByRank(player, perkGroup, perk);
-						return true;	
-					}
-					
-					player.sendMessage(ChatColor.YELLOW + "You do not have access to that type of perk." + ChatColor.RESET);
+					// make sure they're not on a cooldown
+					if(plugin.Cooldowns.getCooldownForPlayer(player, inc) != ""){
+						player.sendMessage(ChatColor.YELLOW + "Perk is on cooldown. Time remaining: " + plugin.Cooldowns.getCooldownForPlayer(player, inc) + ChatColor.RESET);
+						return true;
+					}		
+					// give perk
+					plugin.Functions.givePerkByRank(player, plugin.Functions.getPlayersPerkGroup(player, inc), inc);
 					return true;	
 				}
 				

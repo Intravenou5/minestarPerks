@@ -139,5 +139,46 @@ public class Functions {
 		}
 	}
 	
+	public boolean doesPerkExist(String perkType){
+		for(String p : plugin.perkTypes){
+			if(p.equalsIgnoreCase(perkType)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public ArrayList<String> getPerkGroups(String perkType){
+		ArrayList<String> allGroups = new ArrayList<String>();
+		for(String s : plugin.getConfig().getConfigurationSection(perkType).getKeys(false)){
+			allGroups.add(s);	
+		}
+		return allGroups;
+	}
+	
+	public boolean doesPlayerHavePerkPermission(Player player, String perkType){
+		ArrayList<String> perkGroups = getPerkGroups(perkType);
+		for(String p : perkGroups){
+			String perm = "msperk." + perkType + "." + p;
+			if(player.hasPermission(perm)){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public String getPlayersPerkGroup(Player player, String perkType){
+		// return the group player belongs to for this perk type (if they have priv)
+		String result = "";
+		ArrayList<String> perkGroups = getPerkGroups(perkType);
+		for(String p : perkGroups){
+			String perm = "msperk." + perkType + "." + p;
+			if(player.hasPermission(perm)){
+				return p;
+			}
+		}
+		return result;
+	}
+	
 
 }

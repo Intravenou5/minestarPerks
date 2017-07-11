@@ -58,3 +58,6 @@ TODO
 v1.1
 - Cooldown functions moved to Cooldown class.
 - Cooldown file is now made per player instead of shared cooldown file.
+v1.2
+- Broke sections of CmdExecutor into separate functions now in Functions class.
+- Failed perk use now tells user if it was permission or didn't exist.
